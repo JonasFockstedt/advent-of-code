@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"log"
+	"os"
 	"strconv"
 )
 
@@ -52,7 +55,15 @@ func findElf(inventory []string) int {
 }
 
 func main() {
-	inventory := []string{"1000", "2000", "3000", "", "4000", "", "5000", "6000", "", "7000", "8000", "9000", "", "10000"}
+	input_file, err := os.Open("input.txt")
+	inventory := []string{}
+	if err != nil {
+		log.Fatal(err)
+	}
+	fileScanner := bufio.NewScanner(input_file)
+	for fileScanner.Scan() {
+		inventory = append(inventory, fileScanner.Text())
+	}
 	most_cal := findElf(inventory)
 	fmt.Printf("Elf number %d is carrying the most calories (%d)", elf_most_cal, most_cal)
 }
