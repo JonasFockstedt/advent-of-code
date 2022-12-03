@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"strings"
 )
 
@@ -42,8 +44,11 @@ func calculatePriorities(list_of_contents string) int {
 }
 
 func main() {
-	list_of_contents := "vJrwpWtwJgWrhcsFMMfFFhFp\njqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL\nPmmdzqPrVvPwwTWBwg\nwMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\nttgJtRGJQctTZtZT\nCrZsJsPPZsGzwwsLwLmpwMDw"
-	priority := calculatePriorities(list_of_contents)
+	list_of_contents, err := ioutil.ReadFile("input.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	priority := calculatePriorities(string(list_of_contents))
 
 	fmt.Printf("Summed priority: %d", priority)
 }
