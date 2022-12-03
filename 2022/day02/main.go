@@ -1,6 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"log"
+	"os"
+	"strings"
+)
 
 /*
 A - Opponent Rock
@@ -19,7 +25,7 @@ Input of game:
 |C | Z|
 */
 
-func decideWinner(round [3][2]string) {
+func decideWinner(round [][]string) {
 	points := 0
 	for i := 0; i < len(round); i++ {
 		if round[i][0] == "A" && round[i][1] == "X" { // Opponent rock, me rock
@@ -46,6 +52,20 @@ func decideWinner(round [3][2]string) {
 }
 
 func main() {
-	strategy_guide := [3][2]string{{"A", "Y"}, {"B", "X"}, {"C", "Z"}}
-	decideWinner(strategy_guide)
+	inputs := [][]string{}
+	input_file, err := os.Open("input.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fileScanner := bufio.NewScanner(input_file)
+	fileScanner.Split(bufio.ScanLines)
+	for fileScanner.Scan() {
+		line := strings.Split(fileScanner.Text(), " ")
+		temp_arr := []string{line[0], line[1]}
+		inputs = append(inputs, temp_arr)
+
+	}
+	input_file.Close()
+
+	decideWinner(inputs)
 }
