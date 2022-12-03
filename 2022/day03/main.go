@@ -31,15 +31,42 @@ func compareCompartments(first_comp string, sec_comp string) string {
 	return ""
 }
 
+func compareGroups(rucksacks []string) string {
+	common_items := ""
+	for i := 0; i < len(rucksacks); i += 3 {
+		for _, letter_i := range rucksacks[i] {
+			if strings.Contains(rucksacks[i], string(letter_i)) && strings.Contains(rucksacks[i+1], string(letter_i)) && strings.Contains(rucksacks[i+2], string(letter_i)) {
+				common_items += string(letter_i)
+				break
+			}
+		}
+	}
+	return common_items
+}
+
+func summedPriorities(common_items string) int {
+	sum := 0
+	for _, letter := range common_items {
+		sum += priorities[string(letter)]
+	}
+	return sum
+}
+
 func calculatePriorities(list_of_contents string) int {
 	priority := 0
 	sacks := strings.Split(list_of_contents, "\n")
 
-	for _, element := range sacks { // For each loop that lets you iterate over index and element
-		first_comp, sec_comp := splitRucksackContents(element)
-		common_item := compareCompartments(first_comp, sec_comp)
-		priority += priorities[common_item]
-	}
+	/* Below is for the first part of the day*/
+	// for _, element := range sacks { // For each loop that lets you iterate over index and element
+	// 	first_comp, sec_comp := splitRucksackContents(element)
+	// 	common_item := compareCompartments(first_comp, sec_comp)
+	// 	priority += priorities[common_item]
+	// }
+
+	/* Below is for the second part of the day */
+	common_items := compareGroups(sacks)
+	priority = summedPriorities(common_items)
+
 	return priority
 }
 
