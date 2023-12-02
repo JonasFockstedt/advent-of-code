@@ -1,12 +1,12 @@
-use std::{fs, io::BufReader};
+use std::io::BufReader;
 
 use std::fs::File;
-use std::io::{BufRead};
+use std::io::BufRead;
 fn main() {
     let mut calibration_values: Vec<u32> = vec!();
     let mut cal_val:u32 = 0;
 
-    if let Ok(file) = File::open("input/part1.txt") {
+    if let Ok(file) = File::open("../input/part1.txt") {
         let reader = BufReader::new(file);
         for line in reader.lines(){
             let mut line_cal_val = String::from("");
