@@ -32,17 +32,20 @@ fn main() {
     for line in lines.iter(){
         let mut found_vals = Vec::new(); // vector of tuples of which number was found where
         for key in hash.keys(){
-            let num_char_index = line.find(key);
-            let num_index = line.find(hash[key]);
-
             // (number, found at index) <- structure of tuple
-            if let Some(num_char_index) = num_char_index{
-                let number = hash[key];
-                found_vals.push((number, num_char_index));
-
+            // for finding written numbers
+            let num_str_indicies: Vec<_> = line.match_indices(key).map(|(i, _)| i).collect(); // returns all indicies of the number in words
+            if num_str_indicies.len() > 0{
+                for index in 0..num_str_indicies.len(){
+                    found_vals.push((hash[key], num_str_indicies[index]))
+                }
             }
-            if let Some(num_index) = num_index{
-                found_vals.push((hash[key], num_index));
+            // for finding numbers
+            let num_indicies: Vec<_> = line.match_indices(hash[key]).map(|(i, _)| i).collect(); // returns all indicies of the number
+            if num_indicies.len() > 0{
+                for index in 0..num_indicies.len(){
+                    found_vals.push((hash[key], num_indicies[index]))
+                }
             }
         }
         // sort the vector based on index 1 of the tuples, which is the index the number was found
