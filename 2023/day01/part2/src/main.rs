@@ -1,10 +1,9 @@
-use std::io::BufReader;
 use std::fs::File;
-use std::io::BufRead;
 use std::collections::HashMap;
+use std::io::{BufReader, BufRead};
 
 fn main() {
-    let mut hash = HashMap::from([
+    let hash = HashMap::from([
         ("one", "1"),
         ("two", "2"),
         ("three", "3"),
@@ -15,45 +14,44 @@ fn main() {
         ("eight", "8"),
         ("nine", "9")
     ]);
-    let mut calibration_values: Vec<u32> = vec!();
-    let mut cal_val:u32 = 0;
-    let keys: Vec<&str> = hash.map(|s| s.deref()).collect();
-    println!("{:?}", keys);
+    let mut lines = Vec::new();
+    let file_path = "../input/part1.txt";
 
-    if let Ok(file) = File::open("../input/part1.txt") {
-        let reader = BufReader::new(file);
-        for line in reader.lines(){
-            let mut str_match = String::from("");
-            let mut line_cal_val = String::from("");
-            if let Ok(line) = line {
-                for line_char in line.chars(){
-                    if line_char.is_digit(10) {
-                        line_cal_val.push(line_char);
-                    }else { // Start looking if we are at a word for a number
-                        for number in keys.iter(){
-                            for char_num in number.chars(){
-                                if char_num == line_char{
-                                    str_match.push(char_num); // Found a matching char, add it to match string
-                                }else{
-                                    str_match = String::from("");
-                                    break;
-                                }
-                            }
-                            if str_match == number{
-                                line_cal_val.push(hash[str_match]); // Found match, add the corresponding number
-                                str_match = String::from("");
-                            }
-                        }
-                    }
-                }
+    // Transfer each line of the input into an index in a vector
+    let file = File::open(file_path).unwrap();
+    let reader = BufReader::new(file);
+    for line in reader.lines(){
+        lines.push(line.unwrap());
+    }
+
+
+    let mut calibration_values: Vec<i32> = Vec::new();
+    let mut cal_val:i32 = 0;
+
+    
+    for line in lines.iter(){
+        let mut found_vals = Vec::new(); // vector of tuples of which number was found where
+        for key in hash.keys(){
+            let num_char_index = line.find(key);
+            let num_index = line.find(hash[key]);
+
+            // (number, found at index) <- structure of tuple
+            if let Some(num_char_index) = num_char_index{
+                let number = hash[key];
+                found_vals.push((number, num_char_index));
 
             }
-                let first_digit = line_cal_val.chars().nth(0).unwrap();
-                let second_digit = line_cal_val.chars().nth(line_cal_val.len()-1).unwrap();
-
-                let cal_val_num = format!("{}{}", first_digit, second_digit).parse::<u32>().unwrap();
-                calibration_values.push(cal_val_num);
+            if let Some(num_index) = num_index{
+                found_vals.push((hash[key], num_index));
+            }
         }
+        // sort the vector based on index 1 of the tuples, which is the index the number was found
+        found_vals.sort_by_key(|k| k.1);
+        let (first_digit, _) = found_vals[0];
+        let (last_digit, _) = found_vals[found_vals.len()-1];
+        let cal_val = format!("{}{}",first_digit,last_digit).parse::<i32>().unwrap();
+        calibration_values.push(cal_val);
+
     }
     for num in calibration_values.iter(){
         cal_val += num;
