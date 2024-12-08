@@ -1,11 +1,13 @@
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
+use std::env;
 
 fn main() {
     let mut first_col: Vec<i32> = Vec::new();
     let mut sec_col: Vec<i32> = Vec::new();
-    if let Ok(lines) = read_lines("./input/part1.txt") {
+    let arg: Vec<String> = env::args().collect();
+    if let Ok(lines) = read_lines(arg[1].to_string()) {
         // Consumes the iterator, returns an (Optional) String
         for line in lines.flatten() {
             let line_arr: Vec<&str> = line.split(" ").collect();
@@ -17,16 +19,12 @@ fn main() {
                     sec_col.push(num);
                 }
             }
-            // println!("{:?}", line_arr);
         }
     }
     first_col.sort(); 
     sec_col.sort();
     let distances: Vec<u32> = first_col.iter().zip(sec_col.iter()).map(|(a, b)| a.abs_diff(*b)).collect();
     let total_distance: u32 = distances.iter().sum();
-    println!("{:?}", first_col);
-    println!("{:?}", sec_col);
-    println!("{:?}", distances);
     println!("{:?}", total_distance);
 
 }
